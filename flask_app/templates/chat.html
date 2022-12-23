@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js" integrity="sha512-mHO4BJ0ELk7Pb1AzhTi3zvUeRgq3RXVOu9tTRfnA6qOxGK4pG2u57DJYolI4KrEnnLTcH9/J5wNOozRTDaybXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+
+    <title> Chat app</title>
+</head>
+<body>
+    <nav class="navbar bg-dark" >
+        <div class="navbar-brand">
+            <h2>
+            <span><img src="../static/logo.jpg" alt="logo" width="50" height="50" class="d-inline-block align-text-top"></span>
+            <span class="text-light h1">Workarise</span>
+        </div>
+
+        <div class="flexed"> 
+            <div>
+                <a href="/logout" class="btn btn-danger" id="logout">logout</a>
+            </div>
+        </div>
+    </nav>
+ 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var socket = io.connect();
+            socket.on('connect', function() {
+                console.log($('#userId').innerHTML)
+                let dict = {'content':' entered the chat',
+                // get user first name from html:
+                            'user_id' : document.getElementById('userId').innerHTML};
+
+                socket.send(dict);
+            });
+            socket.on('message', function(msg) {
+                    $("#messages").append('<p class="text-primary">' + msg.user_id + ':'+ msg.content + '</p>');
+                    console.log('Received message');
+                
+            });
+        
+            $('#sendbutton').on('click', function() {
+                let dict = {'content':$('#myMessage').val(),
+                            'user_id' : document.getElementById('userId').innerText};
+
+                socket.send(dict);
+                $('#myMessage').val('');
+            });
+        });
+        </script>
+        <!-- chat container -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3"></div>
+                <!-- chat card -->
+                <div class="chat-div col-lg-6">
+                    <div class="card">
+                        <!-- get user's first name through session and capitalize it  -->
+                        <h3 id="userId" class="text-center">{{session.first_name.upper()}}</h3>
+
+                        <ul id="messages"></ul>
+                        <input type="text" id="myMessage" placeholder="type your message here....">
+                        <button id="sendbutton" class="btn btn-block btn-success">Send</button>
+                    </div>
+                </div>
+            </div>
+</body>
+</html>
