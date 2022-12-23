@@ -1,5 +1,5 @@
 # chat-app
-A chat application in Python, Flask and Socket.IO, Node and bootstrap with login, registration and validation 
+A chat application in Python, Flask and Socket.IO, Node, Jinja and Bootstrap with login, registration and validation 
 not included: node_modules 
 
 ```
